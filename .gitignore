@@ -1,5 +1,6 @@
-# Docker
+# Database
 /db_data/
+/SQL_queries/
 .docker/
 
 # PHP
@@ -28,3 +29,4 @@ desktop.ini
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
