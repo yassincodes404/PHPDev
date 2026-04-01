@@ -1,19 +1,21 @@
-# PHP Cloud - Modern Database Manager
+# Student Management System
 
-A sleek, premium PHP application built with a Dockerized Apache/MySQL stack. This project features a glassmorphism UI, real-time database connectivity status, and a simple interface for managing user data.
+A secure PHP web application for student authentication and profile management, built with a Dockerized Apache/MySQL stack. Features user registration, login, and profile viewing with session-based authentication.
 
 ## 🚀 Features
 
-- **Modern UI**: Dark-themed glassmorphism design using the Inter font.
-- **Micro-interactions**: Smooth transitions and hover effects.
-- **Dockerized**: Ready-to-go environment with PHP 8.3 and MySQL 8.0.
-- **PDO-based**: Secure database interactions using PHP Data Objects.
+- **User Authentication**: Secure login and registration system with password hashing
+- **Student Profiles**: View student information including name, username, and major
+- **Session Management**: Secure session handling with automatic logout
+- **Dockerized**: Ready-to-go environment with PHP 8.3 and MySQL 8.0
+- **Database Auto-Setup**: Automatic table creation on first run
 
 ## 🛠️ Tech Stack
 
 - **Backend**: PHP 8.3 (Apache)
 - **Database**: MySQL 8.0
-- **Frontend**: Vanilla CSS / Semantic HTML5
+- **Frontend**: HTML5 with basic CSS styling
+- **Security**: Password hashing with bcrypt, prepared statements
 
 ## 🏁 Getting Started
 
@@ -23,7 +25,7 @@ A sleek, premium PHP application built with a Dockerized Apache/MySQL stack. Thi
 
 ### Installation & Launch
 
-1.  **Clone the repository** (or navigate to the project folder):
+1.  **Navigate to the project folder**:
     ```bash
     cd PHPDev
     ```
@@ -36,23 +38,29 @@ A sleek, premium PHP application built with a Dockerized Apache/MySQL stack. Thi
 3.  **Access the application**:
     Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
 
-4.  **Database Management**:
+4.  **Database Management** (Optional):
     You can also access **phpMyAdmin** at [http://localhost:8081](http://localhost:8081) for direct database control.
 
 ## 📁 Project Structure
 
-- `src/index.php`: The main application logic and UI.
-- `Dockerfile`: Custom PHP image with required MySQL extensions.
-- `docker-compose.yml`: Services orchestration.
-- `.gitignore`: Configured to keep your repository clean of logs and temporary data.
+- `src/index.php`: Login page and authentication logic
+- `src/register.php`: User registration form
+- `src/profile.php`: Student profile display
+- `src/logout.php`: Session destruction and logout
+- `src/db.php`: Database connection and table initialization
+- `Dockerfile`: Custom PHP image with MySQL extensions
+- `docker-compose.yml`: Multi-service container orchestration
 
 ## 📝 Database Schema
 
-The app expects a `USERS` table in the `myapp` database:
+The application automatically creates a `students` table in the `myapp` database:
 
 ```sql
-CREATE TABLE USERS (
-    id INT PRIMARY KEY,
-    name VARCHAR(50)
+CREATE TABLE students (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    major VARCHAR(100) NOT NULL
 );
 ```
