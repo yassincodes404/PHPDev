@@ -1,10 +1,14 @@
 <?php
-session_start();
+require_once 'bootstrap.php';
 require_once 'db.php';
+require_auth();
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit();
+function fetch_rows(mysqli $conn, string $sql, int $user_id): array
+{
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 $stmt = $conn->prepare("
@@ -20,53 +24,30 @@ $user = $result->fetch_assoc();
 
 if (!$user) {
     session_destroy();
-    header('Location: index.php');
-    exit();
+    redirect_to('login.php');
 }
 
-// Check attendance if student
 $attendance_records = [];
-if ($user['role'] === 'student') {
-    $stmt_att = $conn->prepare("
-        SELECT c.course_name, a.session_date, a.status 
-        FROM attendance a 
-        JOIN courses c ON a.course_id = c.id 
-        WHERE a.user_id = ? 
-        ORDER BY a.session_date DESC
-    ");
-    $stmt_att->bind_param("i", $_SESSION['user_id']);
-    $stmt_att->execute();
-    $att_result = $stmt_att->get_result();
-    while ($row = $att_result->fetch_assoc()) {
-        $attendance_records[] = $row;
-    }
-}
-
-// Check grades if student
 $grades_records = [];
 if ($user['role'] === 'student') {
-    $stmt_grade = $conn->prepare("
-        SELECT c.course_name, g.grade_value, g.grade_letter 
-        FROM grades g 
-        JOIN courses c ON g.course_id = c.id 
-        WHERE g.user_id = ? 
-    ");
-    $stmt_grade->bind_param("i", $_SESSION['user_id']);
-    $stmt_grade->execute();
-    $grade_result = $stmt_grade->get_result();
-    while ($row = $grade_result->fetch_assoc()) {
-        $grades_records[] = $row;
-    }
+    $attendance_records = fetch_rows($conn, "
+        SELECT c.course_name, a.session_date, a.status
+        FROM attendance a
+        JOIN courses c ON a.course_id = c.id
+        WHERE a.user_id = ?
+        ORDER BY a.session_date DESC
+    ", $_SESSION['user_id']);
+    $grades_records = fetch_rows($conn, "
+        SELECT c.course_name, g.grade_value, g.grade_letter
+        FROM grades g
+        JOIN courses c ON g.course_id = c.id
+        WHERE g.user_id = ?
+    ", $_SESSION['user_id']);
 }
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Profile - University App</title>
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
-</head>
-<body>
-    <div class="container profile-container">
+<?php page_start(); ?>
+<div class="content-area">
+    <div class="card profile-container">
         <h1>Welcome, <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>!</h1>
         
         <div class="profile-card">
@@ -131,6 +112,7 @@ if ($user['role'] === 'student') {
             <?php endif; ?>
             <a href="logout.php" class="btn btn-logout">Logout</a>
         </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+<?php page_end(); ?>

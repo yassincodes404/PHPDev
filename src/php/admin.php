@@ -1,11 +1,10 @@
 <?php
-session_start();
+require_once 'bootstrap.php';
 require_once 'db.php';
 
 // Auth check
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit();
+    redirect_to('login.php');
 }
 
 $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
@@ -14,8 +13,7 @@ $stmt->execute();
 $role_res = $stmt->get_result()->fetch_assoc();
 
 if (!$role_res || $role_res['role'] !== 'admin') {
-    header('Location: profile.php');
-    exit();
+    redirect_to('profile.php');
 }
 
 // Search Logic
@@ -79,47 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard - University App</title>
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
-    <style>
-        select, input[type="date"], input[type="number"], input[type="text"] {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        select option {
-            color: #333;
-        }
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-direction: row;
-        }
-        .search-bar input {
-            margin-bottom: 0px !important;
-            flex: 1;
-        }
-        .search-bar button {
-            margin-top: 0px !important;
-            padding: 0 20px;
-        }
-        .admin-container {
-            max-width: 1000px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container admin-container">
+<?php page_start(); ?>
+<div class="content-area">
+    <div class="card admin-container">
         <h1>Admin Control Panel</h1>
         <?php echo $msg; ?>
         
@@ -227,6 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="actions">
             <a href="profile.php" class="btn">Back to Profile</a>
         </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+<?php page_end(); ?>
