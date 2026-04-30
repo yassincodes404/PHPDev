@@ -12,7 +12,8 @@ const port = 3000;
  * Note: Use 'localhost' if running locally, or 'db' if running within the project's Docker network.
  */
 const dbConfig = {
-    host: 'localhost', // Changed to localhost for local testing; use 'db' in Docker
+    host: 'localhost', // Use 'localhost' if running on host, or 'db' if running in Docker
+    port: 3307,        // The port mapped in your docker-compose.yml (3307:3306)
     user: 'user',
     password: 'password',
     database: 'myapp',
@@ -145,10 +146,16 @@ app.post('/login', async (req, res) => {
         const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
         if (hashedPassword === user.password_hash) {
-            // Login Success - Redirecting to the PHP index page
-            // Assuming PHP server is on port 8085 as per docker-compose.yml
-            console.log(`Login successful for user: ${username}. Redirecting to PHP index...`);
-            res.redirect('http://localhost:8085/index.php');
+            // Login Success - Generate a one-time token for PHP autologin
+            const token = crypto.randomBytes(32).toString('hex');
+            
+            // Save token to database
+            await pool.query('UPDATE users SET login_token = ? WHERE id = ?', [token, user.id]);
+
+            console.log(`Login successful for user: ${username}. Redirecting to PHP autologin...`);
+            
+            // Redirect to the PHP autologin script with the token
+            res.redirect(`http://localhost:8085/php/autologin.php?token=${token}`);
         } else {
             res.status(401).send(getAuthPage('Invalid password.'));
         }
