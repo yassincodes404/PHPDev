@@ -32,4 +32,3 @@ function page_end(): void
 {
     include '../html/footer.html';
 }
-?>

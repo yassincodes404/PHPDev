@@ -32,4 +32,3 @@ if ($token) {
 // If token is invalid or missing, redirect to the normal login page
 header("Location: login.php");
 exit();
-?>
