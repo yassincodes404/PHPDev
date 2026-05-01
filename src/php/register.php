@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     if ($stmt->get_result()->num_rows > 0) {
         $error = "Username or Email already exists.";
+        http_response_code(409);
     } else {
         $conn->begin_transaction();
         
@@ -49,10 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $conn->rollback();
                 $error = "Error saving profile: " . $stmt2->error;
+                http_response_code(500);
             }
         } else {
             $conn->rollback();
             $error = "Error creating user: " . $stmt1->error;
+            http_response_code(500);
         }
     }
 }

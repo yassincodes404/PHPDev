@@ -81,7 +81,7 @@ $priorities = [
       <!-- AJAX DEMO: Live Insights -->
       <div class="card" style="border-left: 4px solid var(--primary-color);">
         <h3 class="dash-section-title">
-          <span>⚡</span> Live Insights (AJAX)
+          <span>⚡</span> Live Insights
         </h3>
         <p class="dash-text-sm"><strong>Tip:</strong> <span id="live-study-tip">Loading...</span></p>
         <p class="dash-text-xs" style="margin-top: 10px;">

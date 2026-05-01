@@ -12,7 +12,7 @@ const port = 3000;
  * Note: Use 'localhost' if running locally, or 'db' if running within the project's Docker network.
  */
 const dbConfig = {
-    host: 'localhost', // Use 'localhost' if running on host, or 'db' if running in Docker
+    host: '127.0.0.1', // Using 127.0.0.1 instead of localhost for better compatibility
     port: 3307,        // The port mapped in your docker-compose.yml (3307:3306)
     user: 'user',
     password: 'password',
@@ -160,11 +160,23 @@ app.post('/login', async (req, res) => {
             res.status(401).send(getAuthPage('Invalid password.'));
         }
     } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).send(getAuthPage('Server error: Could not connect to database.'));
+        console.error('❌ Database error during login:', err.message);
+        console.error('Stack trace:', err.stack);
+        res.status(500).send(getAuthPage(`Server error: Could not connect to database. Details: ${err.message}`));
     }
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Node.js Login Server running at http://localhost:${port}`);
+    
+    // Test database connection on startup
+    try {
+        const connection = await pool.getConnection();
+        console.log('✅ Successfully connected to the database.');
+        connection.release();
+    } catch (err) {
+        console.error('❌ Failed to connect to the database on startup:');
+        console.error(err.message);
+        console.log('Please ensure your Docker containers are running and the database is healthy.');
+    }
 });

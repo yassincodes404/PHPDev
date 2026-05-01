@@ -4,9 +4,8 @@
  */
 
 function refreshDashboardData() {
-    console.log("Fetching live data via AJAX...");
+    console.log("Fetching live data...");
 
-    // Use the modern Fetch API to make an AJAX call
     fetch('../ajax/handler.php')
         .then(response => {
             if (!response.ok) {

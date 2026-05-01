@@ -6,6 +6,7 @@
 
 // Set header to return JSON
 header('Content-Type: application/json');
+http_response_code(200);
 
 // Simulate a database check or calculation
 $study_tips = [

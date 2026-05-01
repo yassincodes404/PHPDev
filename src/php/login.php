@@ -20,9 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect_to('dashboard.php');
         } else {
             $error = "Invalid password.";
+            http_response_code(400);
         }
     } else {
         $error = "User not found.";
+         http_response_code(401);
     }
 }
 ?>
