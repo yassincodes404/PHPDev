@@ -90,8 +90,23 @@ $priorities = [
           <span>📈</span> Weekly Progress
         </h3>
       </div>
+
+      <!-- AJAX DEMO: Live Insights -->
+      <div class="card" style="border-left: 4px solid var(--primary-color);">
+        <h3 class="dash-section-title">
+          <span>⚡</span> Live Insights (AJAX)
+        </h3>
+        <p class="dash-text-sm"><strong>Tip:</strong> <span id="live-study-tip">Loading...</span></p>
+        <p class="dash-text-xs" style="margin-top: 10px;">
+          Server Time: <span id="server-time">--:--:--</span> | 
+          Users Online: <span id="online-users">0</span>
+        </p>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- Include AJAX Script -->
+<script src="../ajax/app.js"></script>
 
 <?php page_end(); ?>
