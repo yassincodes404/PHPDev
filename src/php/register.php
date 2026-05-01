@@ -6,7 +6,7 @@ redirect_if_auth();
 
 $error = '';
 $success = '';
-$gender_options = ['Male', 'Female'];
+$gender_options = ['Male', 'Female', 'Other'];
 $fields = [
     ['label' => 'First Name', 'name' => 'first_name', 'type' => 'text', 'required' => true],
     ['label' => 'Last Name', 'name' => 'last_name', 'type' => 'text', 'required' => true],
@@ -48,11 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success = "Registration successful! You can now <a href='login.php'>login</a>.";
             } else {
                 $conn->rollback();
-                $error = "Error saving profile.";
+                $error = "Error saving profile: " . $stmt2->error;
             }
         } else {
             $conn->rollback();
-            $error = "Error creating user.";
+            $error = "Error creating user: " . $stmt1->error;
         }
     }
 }

@@ -12,7 +12,7 @@ function fetch_rows(mysqli $conn, string $sql, int $user_id): array
 }
 
 $stmt = $conn->prepare("
-    SELECT u.username, u.email, u.role, p.first_name, p.last_name, p.major, p.phone 
+    SELECT u.username, u.email, u.role, p.first_name, p.last_name, p.major, p.phone, p.gender 
     FROM users u 
     LEFT JOIN profiles p ON u.id = p.user_id 
     WHERE u.id = ?
@@ -57,6 +57,9 @@ if ($user['role'] === 'student') {
             <p><strong>Role:</strong> <?php echo ucfirst(htmlspecialchars($user['role'])); ?></p>
             <?php if ($user['major']): ?>
                 <p><strong>Major:</strong> <?php echo htmlspecialchars($user['major']); ?></p>
+            <?php endif; ?>
+            <?php if ($user['gender']): ?>
+                <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
             <?php endif; ?>
         </div>
 
